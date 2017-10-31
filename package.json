@@ -1,5 +1,5 @@
 {
-  "name": "jsonp-promise",
+  "name": "jsonp_p",
   "version": "0.0.1",
   "description": "Promise based jsonp",
   "main": "dist/index.js",

@@ -1,0 +1,22 @@
+{
+  "name": "jsonp-promise",
+  "version": "0.0.1",
+  "description": "Promise based jsonp",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "babel index.js -d dist"
+  },
+  "keywords": [
+    "jsonp",
+    "promise"
+  ],
+  "author": "dashixiong",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-jest": "^21.2.0",
+    "babel-preset-env": "^1.6.1",
+    "jest": "^21.2.1"
+  }
+}

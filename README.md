@@ -11,6 +11,7 @@ $ npm install jsonp_p
 
 ```js
 import jsonpPromise from 'jsonp_p'
+
 jsonpPromise({
   url: 'http://jsfiddle.net/echo/jsonp/',  
   params: {

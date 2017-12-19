@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/dashixiong1990/jsonp_p.svg?branch=master)](https://travis-ci.org/dashixiong1990/jsonp_p)
 # jsonp_p
 Promise based jsonp
 

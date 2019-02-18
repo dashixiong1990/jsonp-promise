@@ -47,21 +47,47 @@ jsonp({
 
 ### url
 
+```ts
+type url = string;
+```
+
 request url
 
-### params
+### [params]
+
+```ts
+type params = object;
+```
 
 query string defaultencodeURI
 
-### callback
+### [callback]
+
+```ts
+type callback = string;
+```
 
 callback name
 
-### onSuccess
+### [timeout]
+
+```ts
+type timeout = number;
+```
+
+### [onSuccess]
+
+```ts
+type onSuccess = (res: object) => any;
+```
 
 If callback mode is preferred, then a function can be passed to `onSuccess`
 
-### onError
+### [onError]
+
+```ts
+type onError = (err: Error) => any;
+```
 
 Just like onSuccess, available if callback mode is preferred
 

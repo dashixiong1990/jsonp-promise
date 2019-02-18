@@ -52,7 +52,8 @@ it("support err handler in Promise", () => {
   expect.assertions(1);
   return jsonpPromise({
     params,
-    url: "123"
+    url: "123",
+    timeout: 3000
   }).catch(e => {
     expect(1).toEqual(1);
   });
@@ -73,6 +74,7 @@ it("support onError", done => {
   jsonpPromise({
     params,
     url: "123",
+    timeout: 3000,
     onError() {
       expect(1).toEqual(1);
       done();

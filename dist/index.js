@@ -70,16 +70,45 @@ var jsonpPromise = function () {
       };
 
       var script = this.script;
-      var target = document.getElementsByTagName("script")[0] || document.head;
+      var target = document.getElementsByTagName("script")[0] || document.head || document.getElementsByTagName("head")[0];
       script.src = this.url;
-      script.onload = function () {
+      // ensure errCallback won't be invoked twice
+      var onErrorHandler = function onErrorHandler() {
         clearTimeout(_this.timeoutTimer);
+        errCallback();
       };
+      // remove <script/> after onload
+      var onLoadHandler = function onLoadHandler() {
+        clearTimeout(_this.timeoutTimer);
+        try {
+          script.parentElement.removeChild(script);
+        } catch (e) {
+          // ignore
+        }
+      };
+      if (script.onload) {
+        script.onload = onLoadHandler;
+      } else {
+        // IE 8- case
+        script.onreadystatechange = function () {
+          if (script.readyState === "complete") {
+            onLoadHandler();
+          }
+        };
+      }
       // handle timeout & onerror
       this.timeoutTimer = setTimeout(function () {
         errCallback();
       }, this.timeout);
-      script.onerror = errCallback;
+      if (script.onerror) {
+        script.onerror = onErrorHandler;
+      } else {
+        try {
+          script.attachEvent("onerror", onErrorHandler);
+        } catch (e) {
+          // ignore
+        }
+      }
       target.parentNode.insertBefore(script, target);
     }
   }, {
@@ -88,6 +117,9 @@ var jsonpPromise = function () {
       var _this2 = this;
 
       // support callback mode
+      var THENABLE = {
+        then: function then() {}
+      };
       var _options = this.options,
           onSuccess = _options.onSuccess,
           onError = _options.onError;
@@ -97,9 +129,7 @@ var jsonpPromise = function () {
         var onError2Use = onError || function () {};
         this.setJsonpCallback(onSuccess2Use);
         this.insertScript(onError2Use);
-        return {
-          then: function then() {}
-        };
+        return THENABLE;
       }
       if (global.Promise) {
         return new Promise(function (resolve, reject) {
@@ -107,6 +137,7 @@ var jsonpPromise = function () {
           _this2.setJsonpCallback(resolve);
         });
       }
+      return THENABLE;
     }
   }, {
     key: "setJsonpCallback",

@@ -43,16 +43,48 @@ class jsonpPromise {
   }
   insertScript(errCallback = () => void 0) {
     const script = this.script;
-    const target = document.getElementsByTagName("script")[0] || document.head;
+    const target =
+      document.getElementsByTagName("script")[0] ||
+      document.head ||
+      document.getElementsByTagName("head")[0];
     script.src = this.url;
-    script.onload = () => {
+    // ensure errCallback won't be invoked twice
+    const onErrorHandler = () => {
       clearTimeout(this.timeoutTimer);
+      errCallback();
     };
+    // remove <script/> after onload
+    const onLoadHandler = () => {
+      clearTimeout(this.timeoutTimer);
+      try {
+        script.parentElement.removeChild(script);
+      } catch (e) {
+        // ignore
+      }
+    };
+    if (script.onload) {
+      script.onload = onLoadHandler;
+    } else {
+      // IE 8- case
+      script.onreadystatechange = () => {
+        if (script.readyState === "complete") {
+          onLoadHandler();
+        }
+      };
+    }
     // handle timeout & onerror
     this.timeoutTimer = setTimeout(() => {
       errCallback();
     }, this.timeout);
-    script.onerror = errCallback;
+    if (script.onerror) {
+      script.onerror = onErrorHandler;
+    } else {
+      try {
+        script.attachEvent("onerror", onErrorHandler);
+      } catch (e) {
+        // ignore
+      }
+    }
     target.parentNode.insertBefore(script, target);
   }
   generatePromise() {
